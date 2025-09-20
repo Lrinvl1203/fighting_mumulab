@@ -344,6 +344,19 @@
             return await response.json();
         }
 
+        // 버튼 상태 복원 함수
+        function resetAllButtons() {
+            const buttons = document.querySelectorAll('.btn-pay');
+            buttons.forEach(button => {
+                const btnText = button.querySelector('.btn-text');
+                const loading = button.querySelector('.loading');
+
+                button.disabled = false;
+                btnText.style.display = 'inline';
+                loading.style.display = 'none';
+            });
+        }
+
         // 페이지 로드시 초기화
         document.addEventListener('DOMContentLoaded', function() {
             console.log('무무랩 결제 페이지가 로드되었습니다.');
@@ -352,6 +365,25 @@
             if (POLAR_ACCESS_TOKEN === 'your_polar_access_token_here') {
                 console.warn('Polar API 토큰이 설정되지 않았습니다. 실제 토큰으로 교체해주세요.');
             }
+
+            // 페이지가 다시 보일 때 버튼 상태 복원 (뒤로가기 시)
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    resetAllButtons();
+                }
+            });
+
+            // 페이지 포커스 시에도 버튼 상태 복원
+            window.addEventListener('focus', function() {
+                resetAllButtons();
+            });
+
+            // 브라우저 뒤로가기/앞으로가기 감지
+            window.addEventListener('pageshow', function(event) {
+                if (event.persisted) {
+                    resetAllButtons();
+                }
+            });
         });
     </script>
 </body>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>결제 완료 - 무무랩</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #48bb78;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            animation: scale-in 0.5s ease-out;
+        }
+
+        .success-icon::before {
+            content: '✓';
+            color: white;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        @keyframes scale-in {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #718096;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .info-box {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .info-value {
+            color: #2d3748;
+            font-weight: 500;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #e2e8f0;
+            color: #a0aec0;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 25px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-icon"></div>
+
+        <h1>결제가 완료되었습니다!</h1>
+        <p class="subtitle">
+            무무랩 서비스를 이용해주셔서 감사합니다.<br>
+            결제 확인 및 서비스 이용 안내는 이메일로 발송됩니다.
+        </p>
+
+        <div class="info-box" id="paymentInfo">
+            <!-- 결제 정보가 동적으로 추가됩니다 -->
+        </div>
+
+        <div class="actions">
+            <a href="https://mumulabshome.netlify.app/app" class="btn btn-primary">
+                무무랩 홈페이지로 이동
+            </a>
+            <a href="index.html" class="btn btn-secondary">
+                다른 상품 보기
+            </a>
+        </div>
+
+        <div class="footer">
+            <p>문의사항이 있으시면 고객센터로 연락주세요.</p>
+        </div>
+    </div>
+
+    <script>
+        // URL 파라미터에서 결제 정보 추출
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            const results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // 결제 정보 표시
+        function displayPaymentInfo() {
+            const paymentId = getUrlParameter('payment_id') || '알 수 없음';
+            const amount = getUrlParameter('amount') || '알 수 없음';
+            const productName = getUrlParameter('product_name') || '알 수 없음';
+            const paymentDate = new Date().toLocaleDateString('ko-KR');
+
+            const paymentInfoHTML = `
+                <div class="info-item">
+                    <span class="info-label">상품명</span>
+                    <span class="info-value">${productName}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">결제 금액</span>
+                    <span class="info-value">${amount}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">결제 일시</span>
+                    <span class="info-value">${paymentDate}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">결제 ID</span>
+                    <span class="info-value">${paymentId}</span>
+                </div>
+            `;
+
+            document.getElementById('paymentInfo').innerHTML = paymentInfoHTML;
+        }
+
+        // 페이지 로드시 실행
+        document.addEventListener('DOMContentLoaded', function() {
+            displayPaymentInfo();
+
+            // 5초 후 자동으로 메인 페이지로 이동 (선택사항)
+            // setTimeout(() => {
+            //     window.location.href = 'https://mumulabshome.netlify.app/app';
+            // }, 5000);
+        });
+    </script>
+</body>
+</html>

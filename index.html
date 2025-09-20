@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>무무랩 결제 페이지</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .product-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+
+        .product-description {
+            color: #718096;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .product-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 25px;
+        }
+
+        .price-currency {
+            font-size: 1rem;
+            color: #a0aec0;
+            font-weight: normal;
+        }
+
+        .btn-pay {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-pay:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-pay:active {
+            transform: translateY(0);
+        }
+
+        .btn-pay:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #4a5568;
+        }
+
+        .feature::before {
+            content: '✓';
+            color: #48bb78;
+            font-weight: bold;
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        .subscription-badge {
+            display: inline-block;
+            background: #48bb78;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .support-badge {
+            display: inline-block;
+            background: #ed8936;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .products {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>무무랩 서비스</h1>
+            <p>무무랩의 서비스를 구독하거나 후원해주세요</p>
+        </div>
+
+        <div class="products">
+            <!-- 무무랩 홈페이지 구독 -->
+            <div class="product-card">
+                <span class="subscription-badge">구독 서비스</span>
+                <h2 class="product-title">무무랩 홈페이지 구독</h2>
+                <p class="product-description">
+                    무무랩의 모든 콘텐츠에 무제한으로 접근하세요. 매월 업데이트되는 새로운 콘텐츠와 독점 자료를 제공합니다.
+                </p>
+                <div class="feature">프리미엄 콘텐츠 접근</div>
+                <div class="feature">월간 독점 자료 제공</div>
+                <div class="feature">우선 고객 지원</div>
+                <div class="feature">광고 없는 환경</div>
+
+                <div class="product-price">
+                    ₩9,900 <span class="price-currency">/ 월</span>
+                </div>
+
+                <button class="btn-pay" onclick="initiatePayment('subscription')">
+                    <span class="btn-text">구독하기</span>
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <span>결제 처리중...</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- 무무랩 후원 -->
+            <div class="product-card">
+                <span class="support-badge">일회성 후원</span>
+                <h2 class="product-title">무무랩 후원하기</h2>
+                <p class="product-description">
+                    무무랩의 지속적인 발전을 위해 후원해주세요. 여러분의 후원이 더 나은 콘텐츠 제작에 큰 힘이 됩니다.
+                </p>
+                <div class="feature">프로젝트 발전에 기여</div>
+                <div class="feature">후원자 명단에 등재</div>
+                <div class="feature">감사 메시지 전달</div>
+                <div class="feature">커뮤니티 배지 획득</div>
+
+                <div class="product-price">
+                    ₩3,000 <span class="price-currency">일회성</span>
+                </div>
+
+                <button class="btn-pay" onclick="initiatePayment('support')">
+                    <span class="btn-text">후원하기</span>
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <span>결제 처리중...</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Polar API 설정
+        const POLAR_ACCESS_TOKEN = 'polar_oat_yyWCD9ysqy5sJFf20HCVgoyr0p2Nutfkw1udE0WLF29';
+        const POLAR_ORGANIZATION_ID = '22babd7d-7b88-4177-b9c5-7f394520e19c';
+
+        // 제품 정보
+        const products = {
+            subscription: {
+                id: '449b8858-a5cf-4233-91fe-d55995d005f3',
+                name: '무무랩 홈페이지 구독',
+                price: 9900,
+                currency: 'KRW',
+                type: 'subscription',
+                interval: 'month',
+                success_url: 'https://mumulabshome.netlify.app/app'
+            },
+            support: {
+                id: '563f50c9-e176-49cb-8025-54e9fddb588a',
+                name: '무무랩 후원하기',
+                price: 3000,
+                currency: 'KRW',
+                type: 'one_time'
+            }
+        };
+
+        async function initiatePayment(productType) {
+            const button = event.target;
+            const btnText = button.querySelector('.btn-text');
+            const loading = button.querySelector('.loading');
+
+            // 버튼 상태 변경
+            button.disabled = true;
+            btnText.style.display = 'none';
+            loading.style.display = 'flex';
+
+            try {
+                const product = products[productType];
+
+                // Polar API를 통한 결제 링크 생성
+                const checkoutSession = await createCheckoutSession(product);
+
+                if (checkoutSession && checkoutSession.url) {
+                    // 결제 페이지로 리다이렉트
+                    window.location.href = checkoutSession.url;
+                } else {
+                    throw new Error('결제 링크 생성에 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('Payment error:', error);
+                alert('결제 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+
+                // 버튼 상태 복원
+                button.disabled = false;
+                btnText.style.display = 'inline';
+                loading.style.display = 'none';
+            }
+        }
+
+        async function createCheckoutSession(product) {
+            // Polar API 호출 예시 (실제 구현시 서버사이드에서 처리 권장)
+            const response = await fetch('https://api.polar.sh/v1/checkouts/', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${POLAR_ACCESS_TOKEN}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    products: [product.id],
+                    success_url: product.success_url || 'https://your-domain.com/success.html',
+                    cancel_url: 'https://your-domain.com/cancel.html',
+                    metadata: {
+                        product_type: product.type,
+                        product_name: product.name
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Polar API Error Response:', errorText);
+                throw new Error(`HTTP error! status: ${response.status}, details: ${errorText}`);
+            }
+
+            return await response.json();
+        }
+
+        // 페이지 로드시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('무무랩 결제 페이지가 로드되었습니다.');
+
+            // Polar API 토큰 확인
+            if (POLAR_ACCESS_TOKEN === 'your_polar_access_token_here') {
+                console.warn('Polar API 토큰이 설정되지 않았습니다. 실제 토큰으로 교체해주세요.');
+            }
+        });
+    </script>
+</body>
+</html>

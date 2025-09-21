@@ -301,8 +301,8 @@
                 price: 9900,
                 currency: 'KRW',
                 type: 'subscription',
-                interval: 'month',
-                success_url: 'https://mumulabshome.netlify.app/app'
+                interval: 'month'
+                // success_url 제거 - 기본 성공 페이지 사용
             },
             support: {
                 id: currentProductIds.support,
@@ -310,6 +310,7 @@
                 price: 3000,
                 currency: 'KRW',
                 type: 'one_time'
+                // success_url 없음 - 기본 성공 페이지 사용
             }
         };
 

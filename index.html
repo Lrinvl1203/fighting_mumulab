@@ -280,10 +280,23 @@
         const POLAR_API_URL = TEST_MODE ? POLAR_CONFIG.test.api_url : POLAR_CONFIG.production.api_url;
         const POLAR_ORGANIZATION_ID = '22babd7d-7b88-4177-b9c5-7f394520e19c';
 
-        // 제품 정보
+        // 제품 정보 (테스트/프로덕션 분리)
+        const PRODUCT_IDS = {
+            production: {
+                subscription: '449b8858-a5cf-4233-91fe-d55995d005f3',
+                support: '563f50c9-e176-49cb-8025-54e9fddb588a'
+            },
+            test: {
+                subscription: 'ebc1c47b-e115-4ff1-92a3-780cddf50e36', // 테스트 환경 구독 Product ID
+                support: 'b18d9f7f-2f7b-4675-b966-1e9f7836c57a' // 테스트 환경 후원 Product ID
+            }
+        };
+
+        const currentProductIds = TEST_MODE ? PRODUCT_IDS.test : PRODUCT_IDS.production;
+
         const products = {
             subscription: {
-                id: '449b8858-a5cf-4233-91fe-d55995d005f3',
+                id: currentProductIds.subscription,
                 name: '무무랩 홈페이지 구독',
                 price: 9900,
                 currency: 'KRW',
@@ -292,7 +305,7 @@
                 success_url: 'https://mumulabshome.netlify.app/app'
             },
             support: {
-                id: '563f50c9-e176-49cb-8025-54e9fddb588a',
+                id: currentProductIds.support,
                 name: '무무랩 후원하기',
                 price: 3000,
                 currency: 'KRW',
@@ -301,9 +314,21 @@
         };
 
         async function initiatePayment(productType) {
-            const button = event.target;
+            // 클릭된 요소가 버튼이 아닐 수 있으므로 가장 가까운 버튼 찾기
+            const button = event.target.closest('.btn-pay');
+            if (!button) {
+                console.error('버튼을 찾을 수 없습니다.');
+                return;
+            }
+
             const btnText = button.querySelector('.btn-text');
             const loading = button.querySelector('.loading');
+
+            // 요소 존재 확인
+            if (!btnText || !loading) {
+                console.error('버튼 내부 요소를 찾을 수 없습니다.');
+                return;
+            }
 
             // 버튼 상태 변경
             button.disabled = true;
@@ -327,9 +352,11 @@
                 alert('결제 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
 
                 // 버튼 상태 복원
-                button.disabled = false;
-                btnText.style.display = 'inline';
-                loading.style.display = 'none';
+                if (button && btnText && loading) {
+                    button.disabled = false;
+                    btnText.style.display = 'inline';
+                    loading.style.display = 'none';
+                }
             }
         }
 
@@ -387,6 +414,12 @@
             // Polar API 토큰 확인
             if (POLAR_ACCESS_TOKEN.includes('YOUR_TEST_TOKEN_HERE') || POLAR_ACCESS_TOKEN === 'your_polar_access_token_here') {
                 console.warn('Polar API 토큰이 설정되지 않았습니다. 실제 토큰으로 교체해주세요.');
+            }
+
+            // Product ID 확인
+            if (TEST_MODE && (currentProductIds.subscription.includes('TEST_') || currentProductIds.support.includes('TEST_'))) {
+                console.warn('⚠️ 테스트 환경 Product ID가 설정되지 않았습니다. Polar 테스트 환경에서 제품을 생성해주세요.');
+                alert('테스트 환경 설정이 완료되지 않았습니다.\n\n1. Polar 대시보드에서 테스트 모드로 전환\n2. 제품 2개 생성\n3. Product ID를 코드에 입력해주세요.');
             }
 
             // 페이지가 다시 보일 때 버튼 상태 복원 (뒤로가기 시)

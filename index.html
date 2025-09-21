@@ -216,13 +216,13 @@
                 <p class="product-description">
                     무무랩의 모든 콘텐츠에 무제한으로 접근하세요. 매월 업데이트되는 새로운 콘텐츠와 독점 자료를 제공합니다.
                 </p>
-                <div class="feature">프리미엄 콘텐츠 접근</div>
-                <div class="feature">월간 독점 자료 제공</div>
-                <div class="feature">우선 고객 지원</div>
-                <div class="feature">광고 없는 환경</div>
+                <div class="feature">모든 컨텐츠 접근 가능</div>
+                <div class="feature">무무랩이 현재 작업중인 모든 Notion 접근</div>
+                <div class="feature">유료 전자책 간이 버전 공유</div>
+                <div class="feature">비즈니스 및 프로젝트 상담 가능</div>
 
                 <div class="product-price">
-                    ₩9,900 <span class="price-currency">/ 월</span>
+                    $9.9 <span class="price-currency">/ 월 (결제일 한화기준 변동)</span>
                 </div>
 
                 <button class="btn-pay" onclick="initiatePayment('subscription')">
@@ -247,7 +247,7 @@
                 <div class="feature">커뮤니티 배지 획득</div>
 
                 <div class="product-price">
-                    ₩3,000 <span class="price-currency">일회성</span>
+                    $3 <span class="price-currency">일회성 (결제일 한화기준 변동)</span>
                 </div>
 
                 <button class="btn-pay" onclick="initiatePayment('support')">
@@ -298,8 +298,8 @@
             subscription: {
                 id: currentProductIds.subscription,
                 name: '무무랩 홈페이지 구독',
-                price: 9900,
-                currency: 'KRW',
+                price: 9.9,
+                currency: 'USD',
                 type: 'subscription',
                 interval: 'month'
                 // success_url 제거 - 기본 성공 페이지 사용
@@ -307,8 +307,8 @@
             support: {
                 id: currentProductIds.support,
                 name: '무무랩 후원하기',
-                price: 3000,
-                currency: 'KRW',
+                price: 3,
+                currency: 'USD',
                 type: 'one_time'
                 // success_url 없음 - 기본 성공 페이지 사용
             }

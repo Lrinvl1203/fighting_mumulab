@@ -203,6 +203,9 @@
         <div class="header">
             <h1>무무랩 서비스</h1>
             <p>무무랩의 서비스를 구독하거나 후원해주세요</p>
+            <div id="test-mode-indicator" style="display: none; background: #fff3cd; color: #856404; padding: 10px; border-radius: 8px; margin-top: 15px; font-weight: 600;">
+                🧪 테스트 모드 - 실제 결제가 발생하지 않습니다
+            </div>
         </div>
 
         <div class="products">
@@ -260,7 +263,21 @@
 
     <script>
         // Polar API 설정
-        const POLAR_ACCESS_TOKEN = 'polar_oat_yyWCD9ysqy5sJFf20HCVgoyr0p2Nutfkw1udE0WLF29';
+        const TEST_MODE = true; // true: 테스트 모드, false: 프로덕션 모드
+
+        const POLAR_CONFIG = {
+            production: {
+                token: 'polar_oat_yyWCD9ysqy5sJFf20HCVgoyr0p2Nutfkw1udE0WLF29',
+                api_url: 'https://api.polar.sh'
+            },
+            test: {
+                token: 'polar_oat_FFBic5tuXw9Kn2EoYoKEv2bFR1z9LVL92879e4PYTaU',
+                api_url: 'https://sandbox-api.polar.sh'
+            }
+        };
+
+        const POLAR_ACCESS_TOKEN = TEST_MODE ? POLAR_CONFIG.test.token : POLAR_CONFIG.production.token;
+        const POLAR_API_URL = TEST_MODE ? POLAR_CONFIG.test.api_url : POLAR_CONFIG.production.api_url;
         const POLAR_ORGANIZATION_ID = '22babd7d-7b88-4177-b9c5-7f394520e19c';
 
         // 제품 정보
@@ -318,7 +335,7 @@
 
         async function createCheckoutSession(product) {
             // Polar API 호출 예시 (실제 구현시 서버사이드에서 처리 권장)
-            const response = await fetch('https://api.polar.sh/v1/checkouts/', {
+            const response = await fetch(`${POLAR_API_URL}/v1/checkouts/`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${POLAR_ACCESS_TOKEN}`,
@@ -361,8 +378,14 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('무무랩 결제 페이지가 로드되었습니다.');
 
+            // 테스트 모드 표시
+            if (TEST_MODE) {
+                document.getElementById('test-mode-indicator').style.display = 'block';
+                console.log('🧪 테스트 모드 활성화 - 실제 결제가 발생하지 않습니다.');
+            }
+
             // Polar API 토큰 확인
-            if (POLAR_ACCESS_TOKEN === 'your_polar_access_token_here') {
+            if (POLAR_ACCESS_TOKEN.includes('YOUR_TEST_TOKEN_HERE') || POLAR_ACCESS_TOKEN === 'your_polar_access_token_here') {
                 console.warn('Polar API 토큰이 설정되지 않았습니다. 실제 토큰으로 교체해주세요.');
             }
 
